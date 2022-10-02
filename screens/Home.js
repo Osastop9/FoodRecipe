@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import CategoryCard from '../components/CategoryCard';
+import TrendingCard from '../components/TrendingCard';
 
 import {FONTS, COLORS, SIZES, icons, images, dummyData} from '../constants';
 
@@ -86,7 +87,75 @@ const Home = ({navigation}) => {
           marginHorizontal: SIZES.padding,
           borderRadius: 10,
           backgroundColor: COLORS.lightGreen,
-        }}></View>
+        }}>
+        <View
+          style={{
+            width: 100,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image source={images.recipe} style={{width: 80, height: 80}} />
+        </View>
+        <View style={{flex: 1, paddingVertical: SIZES.radius}}>
+          <Text style={{width: '70%', ...FONTS.body4}}>
+            You have 12 recipes that you haven't tried out yet!
+          </Text>
+          <TouchableOpacity
+            style={{marginTop: 10}}
+            onPress={() => console.log('See Recipes')}>
+            <Text
+              style={{
+                color: COLORS.darkGreen,
+                textDecorationLine: 'underline',
+                ...FONTS.h4,
+              }}>
+              See Recipes
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  function renderTrendingSection() {
+    return (
+      <View style={{marginTop: SIZES.padding}}>
+        <Text style={{marginHorizontal: SIZES.padding, ...FONTS.h2}}>
+          Trending Recipe
+        </Text>
+        <FlatList
+          data={dummyData.trendingRecipes}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => `${item.id}`}
+          renderItem={({item, index}) => {
+            return (
+              <TrendingCard
+                containerStyle={{marginLeft: index === 0 ? SIZES.padding : 0}}
+                recipeItem={item}
+                onPress={() => navigation.navigate('Recipe', {recipe: item})}
+              />
+            );
+          }}
+        />
+      </View>
+    );
+  }
+
+  function renderCategoryHeader() {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 20,
+          marginHorizontal: SIZES.padding,
+        }}>
+        <Text style={{flex: 1, ...FONTS.h2}}>Categories</Text>
+        <TouchableOpacity>
+          <Text style={{color: COLORS.gray, ...FONTS.body4}}>View all</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -102,6 +171,8 @@ const Home = ({navigation}) => {
             {renderHeader()}
             {renderSearchBar()}
             {renderSeeRecipesCard()}
+            {renderTrendingSection()}
+            {renderCategoryHeader()}
           </View>
         }
         renderItem={({item}) => {
