@@ -8,11 +8,10 @@ const TabIcon = ({icon, focused}) => {
       <Image
         source={icon}
         resizeMode="contain"
-        style={{
-          width: 30,
-          height: 30,
-          tintColor: focused ? COLORS.darkGreen : COLORS.lightLime,
-        }}
+        style={[
+          styles.icon,
+          {tintColor: focused ? COLORS.darkGreen : COLORS.lightLime},
+        ]}
       />
       {focused && <View style={styles.bottomFocus} />}
     </View>
@@ -35,6 +34,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 80,
     width: 50,
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
 });
 
