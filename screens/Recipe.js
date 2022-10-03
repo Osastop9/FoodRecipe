@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {BlurView} from '@react-native-community/blur';
 import {FONTS, SIZES, COLORS, icons} from '../constants';
+import Viewers from '../components/Viewers';
 
 const HEADER_HEIGHT = 350;
 
@@ -139,8 +140,37 @@ const Recipe = ({navigation, route}) => {
           }}
         />
 
-        <Animated.View>
-          
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            paddingBottom: 10,
+            opacity: scrollY.interpolate({
+              inputRange: [HEADER_HEIGHT - 100, HEADER_HEIGHT - 50],
+              outputRange: [0, 1],
+            }),
+
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [HEADER_HEIGHT - 100, HEADER_HEIGHT - 50],
+                  outputRange: [50, 0],
+                  extrapolate: 'clamp',
+                }),
+              },
+            ],
+          }}>
+          <Text style={{color: COLORS.lightGray2, ...FONTS.body4}}>
+            Recipe by:
+          </Text>
+          <Text style={{color: COLORS.white2, ...FONTS.h3}}>
+            {selectedRecipe?.author?.name}
+          </Text>
         </Animated.View>
 
         <TouchableOpacity
@@ -237,13 +267,56 @@ const Recipe = ({navigation, route}) => {
     );
   }
 
+  const renderRecipeInfo = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          height: 130,
+          width: SIZES.width,
+          paddingHorizontal: 30,
+          paddingVertical: 20,
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            flex: 1.5,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              ...FONTS.h2,
+            }}>
+            {selectedRecipe?.name}
+          </Text>
+          <Text
+            style={{
+              marginTop: 5,
+              color: COLORS.lightGray2,
+              ...FONTS.body4,
+            }}>
+            {selectedRecipe?.duration} | {selectedRecipe?.serving} Serving
+          </Text>
+        </View>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Viewers viewersList={selectedRecipe?.viewers} />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Animated.FlatList
         data={selectedRecipe?.ingredients}
         keyExtractor={item => `${item.id}`}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={<View>{renderReciepeCardHearder()}</View>}
+        ListHeaderComponent={
+          <View>
+            {renderReciepeCardHearder()}
+            {renderRecipeInfo()}
+          </View>
+        }
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
